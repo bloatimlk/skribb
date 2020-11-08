@@ -15,6 +15,7 @@ function GameLobby() {
   const [userName, setUserName] = useState();
   const [users, updateUserData] = useState({});
   const [gameOver, updateGameOver] = useState(false);
+  const [readyStatus, setReadyStatus] = useState(false);
   const socket = useRef(establishIoConnection(window.location.pathname))
     .current;
 
@@ -30,6 +31,7 @@ function GameLobby() {
     }
 
     function updateUser(message) {
+      console.log("message.data:", message.data)
       updateUserData(message.data);
     }
 
@@ -46,7 +48,7 @@ function GameLobby() {
       socket.off(SocketEvents.USERS_UPDATED, updateUser);
       socket.off(SocketEvents.GAME_OVER, updateGame);
     };
-  }, [gameStatus]);
+  }, [gameStatus, users]);
 
   console.log("user after click", users)
   console.log("gameOver after click", gameOver)
@@ -57,7 +59,7 @@ function GameLobby() {
     <div>
       <h3>LobbyName: {lobbyName}</h3>
       {gameOver === "WINNER" ? (
-        <WinnerPage users={users} updateUserData={updateUserData} socket = {socket} userName= {userName} initialUserState={initialUserState} updateGameStatus={updateGameStatus} updateGameOver={updateGameOver} />
+        <WinnerPage readyStatus={readyStatus} users={users} updateUserData={updateUserData} socket = {socket} userName= {userName} updateGameStatus={updateGameStatus} updateGameOver={updateGameOver} />
       )
       :
       (

@@ -25,30 +25,14 @@ function GameBoard({ initialGameData, initialUserState, socket, userName,users }
 
     socket.on(SocketEvents.DECREMENT_DRAW_TIMER, decrementDrawTimer);
     socket.on(SocketEvents.START_YOUR_TURN, updateWord);
-    
+
     return () => {
       socket.off(SocketEvents.DECREMENT_DRAW_TIMER, decrementDrawTimer);
       socket.off(SocketEvents.START_YOUR_TURN, updateWord);
-      
+
 
     };
   }, [gameData, myWord, users]);
-  
-  console.log(initialUserState)
-  console.log(users)
-
-  // useEffect(() => {
-  //   function updated(usersData) {
-  //     console.log("board updated");
-  //     updateUserData(usersData.data);
-  //   }
-  //   socket.on(SocketEvents.USERS_UPDATED, updated);
-
-  //   return () => {
-  //     socket.off(SocketEvents.USERS_UPDATED, updated);
-  //   };
-  // });
-
 
   function handleClearDrawing() {
     console.log('hit clear drawing');
@@ -90,12 +74,12 @@ function GameBoard({ initialGameData, initialUserState, socket, userName,users }
         return (
           <li key={user.userId}>
             <h3>
-              {user.userName} :{user.currentScore} 
+              {user.userName} :{user.currentScore}
             </h3>
           </li>
         );
       })}
-      </ul> 
+      </ul>
       <Suspense fallback={<dev>Loading...</dev>}>
         <ScribbleBoard
           socket={socket}

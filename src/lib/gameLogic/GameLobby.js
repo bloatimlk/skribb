@@ -1,5 +1,4 @@
 import User from "./User";
-import Message from "./Message";
 import SocketEvents from "../enums/socketEvents";
 import { EventOptions } from "../utils";
 import { Socket } from "socket.io-client";
@@ -13,7 +12,7 @@ class GameLobby {
     this.users = {};
     this.totalRounds = 1;
     this.currentRound = 1;
-    this.timerLength = 7;
+    this.timerLength = 1;
     this.drawTimer = this.timerLength;
     this.currentDrawer = 0; //index
     this.currentDrawerName;
@@ -74,7 +73,9 @@ class GameLobby {
           },
           event: SocketEvents.GAME_OVER,
         });
+
         this.emitEvent(gameOver);
+        this.updateAllUsers({ property: 'readyStatus', value: false });
         return;
       } else {
         this.currentRound += 1;
@@ -168,6 +169,24 @@ class GameLobby {
     });
 
     this.emitEvent(newUserUpdateMsg);
+  }
+
+  updateAllUsers(options) {
+    for (let user in this.users) {
+      this.users[user].updateProperty(
+        options.property,
+        options.value
+      );
+    }
+
+    const allUsersUpdatedMsg = new EventOptions({
+      message: {
+        data: this.users,
+      },
+      event: SocketEvents.USERS_UPDATED,
+    });
+
+    this.emitEvent(allUsersUpdatedMsg);
   }
 
   checkLobbyReadyStatus() {
